@@ -77,12 +77,12 @@
                               <label class="starpassword-setting-label"><span>等待时间 <span id="S-starpassword-wait-time-label">（${util.getValue('setting_wait_time')}毫秒）</span></span><input type="range" id="S-starpassword-wait-time" min="0" max="1000" step="50" value="${util.getValue('setting_wait_time')}" style="width: 180px;"></label>
                             </div>`;
                 Swal.fire({
-                    title: '星号密码显示助手',
+                    title: '实时显示星号密码',
                     html,
                     icon: 'info',
                     showCloseButton: true,
                     confirmButtonText: '保存',
-                    footer: '<div style="text-align: center;font-size: 1em;">Powered by <a href="https://www.youxiaohou.com">油小猴</a></div>',
+                    footer: '<div style="text-align: center;font-size: 1em;">Powered by <a href="https://blog.811520.xyz/">yutian81-青云志</a></div>',
                     customClass: {
                         container: 'starpassword-container',
                         popup: 'starpassword-popup'
