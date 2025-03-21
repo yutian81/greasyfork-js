@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         YouTube-adB
+// @name         YouTube-adb
 // @name:zh-CN   YouTube去广告
-// @namespace    https://github.com/iamfugui/youtube-adb
+// @namespace    https://github.com/yutian81/greasyfork-js
 // @version      7.0
 // @description  移除YouTube广告，包括静态广告、视频广告和Shorts广告，兼容最新YouTube页面结构。
 // @match        *://*.youtube.com/*
@@ -9,6 +9,8 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        none
 // @license      MIT
+// @updateURL    https://raw.githubusercontent.com/yutian81/greasyfork-js/main/youtube-adb.js
+// @downloadURL  https://raw.githubusercontent.com/yutian81/greasyfork-js/main/youtube-adb.js
 // ==/UserScript==
 
 (function () {
