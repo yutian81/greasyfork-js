@@ -95,198 +95,181 @@
 // @supportURL        https://github.com/ChinaGodMan/UserScripts/issues
 // @homepageURL       https://github.com/ChinaGodMan/UserScripts
 
-// @downloadURL https://raw.githubusercontent.com/yutian81/greasyfork-js/refs/heads/main/github-icon.js
-// @updateURL https://raw.githubusercontent.com/yutian81/greasyfork-js/refs/heads/main/github-icon.js
 // ==/UserScript==
-
-(function() {
-    'use strict';
-
-    // 配置常量
-    const CONFIG_URL = 'https://raw.githubusercontent.com/ChinaGodMan/UserScripts/main/github-file-list-beautifier-plus/colors.json';
-    const ICON_SOURCES = [
-        'https://raw.githubusercontent.com/the-userr/GitHub-Icons/master/icons/',
-        'https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/icons/'
-    ];
-    const CACHE_TTL = 3600 * 1000; // 1小时缓存
-
-    // 全局状态
-    let config = loadPersistedConfig();
-    let observer;
-
-    // 主入口
-    init();
-
-    /********************
-     * 核心功能实现
-     ********************/
-    function init() {
-        setupMutationObserver();
-        checkConfigUpdate();
-        applyStyles();
-    }
-
-    function applyBeautification() {
-        document.querySelectorAll('.js-navigation-item, .react-directory-truncate').forEach(item => {
-            if (item.dataset.beautified) return;
-            
-            const [nameEl, iconEl] = extractElements(item);
-            if (!nameEl || !iconEl) return;
-
-            const ext = getFileExtension(nameEl.textContent);
-            const fileType = config.fileTypes[ext] || config.fileTypes.default;
-
-            applyColor(nameEl, fileType.color);
-            replaceIcon(iconEl, fileType.icon, ext);
-            
-            item.dataset.beautified = true;
-        });
-    }
-
-    /********************
-     * 图标处理系统
-     ********************/
-    function replaceIcon(originalIcon, iconName, ext) {
-        const img = createIconElement(ext);
-        const iconUrl = resolveIconUrl(iconName);
-
-        img.onerror = createErrorHandler(img, iconName, originalIcon.cloneNode(true));
-        img.src = iconUrl;
-
-        originalIcon.replaceWith(img);
-    }
-
-    function resolveIconUrl(iconName) {
-        const correctedName = iconName.replace(/\.svgl$/i, '.svg');
-        for (const source of ICON_SOURCES) {
-            const testUrl = `${source}${correctedName}`;
-            if (testUrlExists(testUrl)) return testUrl;
+'use strict'
+let customColors = GM_getValue('fileTypesColors', {})
+var DEBUG = false
+var addIcon = true
+if (DEBUG) {
+    GM_setValue('fileTypesColors', {})
+}
+GM_setValue('fileTypesColors', {})
+if (Object.keys(customColors).length === 0) {
+    GM_xmlhttpRequest({
+        method: 'GET',
+        url: 'https://raw.githubusercontent.com/ChinaGodMan/UserScripts/main/github-file-list-beautifier-plus/colors.json',
+        //url: 'http://127.0.0.1:5500/UserScripts/Script%20details/github-file-list-beautifier-plus/colors.json',
+        onload: function (response) {
+            try {
+                customColors = JSON.parse(response.responseText)
+                GM_setValue('fileTypesColors', customColors) // 保存到本地存储
+                requestAnimationFrame(start)
+            } catch (e) {
+                console.error('解析颜色配置失败:', e)
+            }
+        },
+        onerror: function () {
+            console.error('加载颜色配置失败')
         }
-        return generateFallbackSvg();
+    })
+} else {
+    requestAnimationFrame(start)
+}
+let savedConfig = {}
+try {
+    savedConfig = JSON.parse(localStorage.FileListBeautifier) || {}
+} catch (e) { }
+const config = Object.assign({},
+    ...Object.entries({
+        iconSize: 24,
+        colorSeed1: 13,
+        colorSeed2: 1299721,
+        colorSeed3: 179426453
+    }).map(([k, v]) => ({ [k]: +savedConfig[k] || v })))
+const IMG_CLS = 'wOxxOm-image-icon'
+const rxImages = /^(png|jpe?g|bmp|gif|cur|ico|svg)$/i
+const styleQueue = []
+const { sheet } = document.documentElement.appendChild($create('style', {
+    textContent: /*language=CSS*/ `
+    .${IMG_CLS} {
+      width: ${config.iconSize}px;
+      height: ${config.iconSize}px;
+      object-fit: scale-down;
+      margin: 0 -4px;
     }
-
-    function createErrorHandler(img, iconName, fallbackIcon) {
-        let retries = 0;
-        return function() {
-            if (retries++ < ICON_SOURCES.length) {
-                img.src = `${ICON_SOURCES[retries-1]}${iconName}`;
-            } else {
-                img.replaceWith(fallbackIcon);
+     .qinwuyuan-file-icon {
+      width: 16px; 
+      height: 16px; 
+      object-fit: scale-down;
+      margin: 0 -4px;
+    }
+    a[file-type=":folder"] {
+      font-weight: bold;
+    }
+    `.replace(/;/g, '!important;')
+}))
+const filetypes = {}
+const ME = Symbol(GM_info.script.name)
+const ob = new MutationObserver(start)
+let lumaBias, lumaFix, lumaAmp
+function start() {
+    beautify()
+    ob.observe(document, { subtree: true, childList: true })
+}
+function beautify() {
+    for (const el of document.querySelectorAll('.react-directory-truncate, .js-navigation-open')) {
+        if (ME in el)
+            continue
+        el[ME] = true
+        const isOld = el.tagName === 'A'
+        const a = isOld ? el : el.getElementsByTagName('a')[0]
+        const url = a && a.href
+        if (!url)
+            continue
+        const icon = el.closest(isOld ? '.js-navigation-item' : 'td').querySelector('svg')
+        if (icon.classList.contains(isOld ? 'octicon-file-directory-fill' : 'icon-directory')) {
+            a.setAttribute('file-type', ':folder')
+            continue
+        }
+        let filename = url.split('/').pop().toLowerCase()
+        let ext = (url.match(/\.(\w+)$|$/)[1] || filename).toLowerCase()
+        if (customColors[filename]) {
+            ext = filename
+        }
+        a.setAttribute('file-type', ext)
+        const customIcon = customColors[filename] && customColors[filename].icon
+            ? customColors[filename].icon
+            : (customColors[ext] && customColors[ext].icon) || null
+        if (!filetypes[ext])
+            addFileTypeStyle(ext)
+        
+        if (customIcon && addIcon) {
+            let iconUrl = customIcon
+            iconUrl = iconUrl.replace(/\.svgl$/i, '.svg')
+            if (!iconUrl.startsWith('https://') && 
+                !iconUrl.startsWith('data:image') && 
+                !iconUrl.endsWith('.svg')) {
+                iconUrl += '.svg'
             }
-        };
+            if (!iconUrl.startsWith('https://') && !iconUrl.startsWith('data:image')) {
+                iconUrl = `https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/icons/${iconUrl}`
+            }
+            const img = $create('img', {
+                className: 'qinwuyuan-file-icon',
+                src: iconUrl,
+                alt: ext
+            })
+            img.onerror = function() {
+                this.style.display = 'none'
+                setTimeout(() => {
+                    this.src = iconUrl.replace('PKief', 'the-userr').replace('vscode-material-icon-theme', 'GitHub-Icons')
+                    this.style.display = ''
+                }, 500)
+            }
+            icon.replaceWith(img)
+        }
     }
+}
 
-    /********************
-     * 配置管理系统
-     ********************/
-    function checkConfigUpdate() {
-        GM_xmlhttpRequest({
-            method: 'HEAD',
-            url: CONFIG_URL,
-            onload: res => {
-                const lastModified = new Date(res.responseHeaders.match(/last-modified:\s*(.*)/i)[1]);
-                if (lastModified > config.lastUpdated) {
-                    fetchLatestConfig();
+function addFileTypeStyle(type) {
+    filetypes[type] = true
+    if (!styleQueue.length)
+        requestAnimationFrame(commitStyleQueue)
+    styleQueue.push(type)
+}
+function commitStyleQueue() {
+    if (!lumaAmp) initLumaScale()
+    const seed2 = config.colorSeed2
+    const seed3 = config.colorSeed3
+    for (const type of styleQueue) {
+        const colorConfig = customColors[type]
+        if (colorConfig) {
+            const color = colorConfig.color
+            if (color) {
+                sheet.insertRule(/*language=CSS*/ `
+                a[file-type="${type}"]:not(#foo) {
+                  color: ${color} !important;
                 }
+              `)
             }
-        });
-    }
-
-    function fetchLatestConfig() {
-        GM_xmlhttpRequest({
-            method: 'GET',
-            url: CONFIG_URL,
-            onload: res => {
-                try {
-                    const newConfig = JSON.parse(res.responseText);
-                    newConfig.lastUpdated = Date.now();
-                    persistConfig(newConfig);
-                    config = newConfig;
-                    applyBeautification();
-                } catch (e) {
-                    console.error('[美化脚本] 配置解析失败:', e);
-                }
+        } else {
+            const hash = calcSimpleHash(type)
+            const H = hash % 360
+            const Hq = H / 60
+            const S = hash * seed2 % 50 + 50 | 0
+            const redFix = (Hq < 1 ? 1 - Hq : Hq > 4 ? (Hq - 4) / 2 : 0)
+            const blueFix = (Hq < 3 || Hq > 5 ? 0 : Hq < 4 ? Hq - 3 : 5 - Hq) * 3
+            const L = hash * seed3 % lumaAmp + lumaBias + (redFix + blueFix) * lumaFix * S / 100 | 0
+            sheet.insertRule(/*language=CSS*/ `
+            a[file-type="${type}"]:not(#foo) {
+              color: hsl(${H},${S}%,${L}%) !important;
             }
-        });
+          `)
+        }
     }
-
-    /********************
-     * 工具函数
-     ********************/
-    function testUrlExists(url) {
-        let exists = false;
-        GM_xmlhttpRequest({
-            method: "HEAD",
-            url: url,
-            synchronous: true,
-            onload: res => exists = res.status === 200
-        });
-        return exists;
-    }
-
-    function createIconElement(ext) {
-        const img = document.createElement('img');
-        img.className = 'beautifier-icon';
-        img.alt = ext;
-        img.style = 'width:16px; height:16px; margin-right:8px;';
-        return img;
-    }
-
-    function generateFallbackSvg() {
-        return `data:image/svg+xml;base64,${btoa('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/></svg>')}`;
-    }
-
-    /********************
-     * 持久化和初始化
-     ********************/
-    function loadPersistedConfig() {
-        return GM_getValue('fileTypesConfig', {
-            fileTypes: {},
-            lastUpdated: 0
-        });
-    }
-
-    function persistConfig(newConfig) {
-        GM_setValue('fileTypesConfig', newConfig);
-    }
-
-    function setupMutationObserver() {
-        observer = new MutationObserver(mutations => {
-            if (document.querySelector('.react-directory-truncate')) {
-                applyBeautification();
-            }
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
-    }
-
-    function applyStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-            .beautifier-icon {
-                vertical-align: text-bottom;
-                filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
-            }
-            [data-beautified] .css-truncate-target {
-                font-weight: 500 !important;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // 辅助函数
-    function getFileExtension(filename) {
-        return filename.split('.').pop().toLowerCase() || 'default';
-    }
-
-    function applyColor(element, color) {
-        element.style.color = color || '#24292e';
-        element.style.fontWeight = '500';
-    }
-
-    function extractElements(item) {
-        return [
-            item.querySelector('.js-navigation-open, .react-directory-filename-column > div'),
-            item.querySelector('.octicon, .react-directory-filename-column svg')
-        ];
-    }
-})();
+    styleQueue.length = 0
+}
+function calcSimpleHash(text) {
+    let hash = 0
+    for (let i = 0, len = text.length; i < len; i++)
+        hash = ((hash << 5) - hash) + text.charCodeAt(i)
+    return Math.abs(hash * config.colorSeed1 | 0)
+}
+function initLumaScale() {
+    const [, r, g, b] = getComputedStyle(document.body).backgroundColor.split(/[^\d.]+/).map(parseFloat)
+    const isDark = (r * .2126 + g * .7152 + b * .0722) < 128;
+    [lumaBias, lumaAmp, lumaFix] = isDark ? [30, 50, 12] : [25, 15, 0]
+}
+function $create(tag, props) {
+    return Object.assign(document.createElement(tag), props)
+}
