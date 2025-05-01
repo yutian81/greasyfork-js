@@ -95,8 +95,8 @@
 // @supportURL        https://github.com/ChinaGodMan/UserScripts/issues
 // @homepageURL       https://github.com/ChinaGodMan/UserScripts
 
-// @downloadURL https://update.greasyfork.org/scripts/508047/GitHub%20file%20list%20beautifier.user.js
-// @updateURL https://update.greasyfork.org/scripts/508047/GitHub%20file%20list%20beautifier.meta.js
+// @downloadURL https://raw.githubusercontent.com/yutian81/greasyfork-js/refs/heads/main/github-icon.js
+// @updateURL https://raw.githubusercontent.com/yutian81/greasyfork-js/refs/heads/main/github-icon.js
 // ==/UserScript==
 
 (function() {
