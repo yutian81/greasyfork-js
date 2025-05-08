@@ -88,11 +88,11 @@
     "icon": "pl"
   },
   "sh": {
-    "color": "#89e051",
+    "color": "#002334",
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA5klEQVR4nGNgGJFgzYHLC9YcvPqVLvjA5QVwi1cduHRi/dEb/+mBVx24dGIEW7xi34Vds9cd/D9l+S6a4tnrDv4H2QW3eNGOkxNis6v/O/nF0BTHZlf/B9k1avH/0aB29o/9H5aeQ//E5RYS/3/GtoX/c5vr6Z+qXQLj/nctm/a/bnov/bOTs38s2OKeFdP/uwbE0T8fT1w353/1pK5h7mOXwLj/fatm0TeO3QYqVTvjycct8yb+n7VzCU6c39JAvcTlRO/s5DRqsd9oUMeQl7hW7Dmbvmjb6Rv0wCv2nE0n3MUYjgAA5CmFXNwf+EMAAAAASUVORK5CYII="
   },
   "bat": {
-    "color": "#4eaa25",
+    "color": "#001017",
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA8UlEQVR4nO3WMUoDURDG8R8pcobcJI2KhQewVzyBtbaLhcYj2AfxFoIipBIbj7DGKyjCkyezRWSFZJN9heSDgWHh2/+bGd7wKKghrvGGtOGoMQnGT5J6jomeKkm/Yq4AJEWUB/WltAX10roT3OMFly3mWXjG64CO8YULHGIvvj/hMfKj8EzXAT3jrsWQIQ+RD+MSfmDUFfSOaomTVuGruoJy/2+XAI2ionmzNFcFneIT59jHQcuMGk3Dm2e2MmiAM7zGwr1pmVGjcXhzF/7SdjN0Vvq/S7WOZKcHyG78uy71OLnKoHyrM6ypbJOx8Nwqom+UGxOIhae5YwAAAABJRU5ErkJggg=="
   },
   "ps1": {
