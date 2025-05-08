@@ -89,11 +89,11 @@
   },
   "sh": {
     "color": "#89e051",
-    "icon": "https://raw.githubusercontent.com/the-userr/GitHub-Icons/master/icons/Shell.svgl"
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAiElEQVR4nO2VPQqAMAyF3+7FrHgfRzN6P0/gzz0ihbh0iDRtqKAP3pDQ5iM0pMCvTA0ATgBs9AEgaICS4izeNcB9aDSaxe0BXOj2AKs4F9B5AmLxFQB5AaImiRcvQC7EBCDJzR4AkpiSjlJXfWRW5v5dY2oRP90/KqyJTQME2eclf0Fv6h2f1QWfjbITbC6V7AAAAABJRU5ErkJggg=="
   },
   "bat": {
     "color": "#4eaa25",
-    "icon": "https://raw.githubusercontent.com/the-userr/GitHub-Icons/master/icons/CMD.png"
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA9UlEQVR4nO3Vv0pDMRTH8Q99ofoo1zFQH0CkKCL6BA7+3VwEJ0efQCqIowpdRMXNxYqgQ0E3UblwhHLhSlMqKvYHBxKS/L7JOSFhokw1MIUCKTPKNc3wqFVzBONUidKjVqPsPFVi+itAGlP8A8AyHvCCDRygE2ObuMYsjnCPcyzkAG7QxTrmAvYWphfR3sITDnEZ0KEAM2GwOrCgBPSwg0f0sR2AvdjIK1rDAFo1gBPcRjqqgLUcQIojdyPf7QDs4h37eB4AfKboKqcGi7gLo7LIx1jCaYydYSUK34v+/K+6punPAooxmBc/+lw3YsK3fTgTqeoDRRmMj7OYsycAAAAASUVORK5CYII="
   },
   "ps1": {
     "color": "#012456",
