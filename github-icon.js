@@ -49,8 +49,8 @@ GM_setValue('fileTypesColors', {})
 if (Object.keys(customColors).length === 0) {
     GM_xmlhttpRequest({
         method: 'GET',
-        url: 'https://raw.githubusercontent.com/ChinaGodMan/UserScripts/main/github-file-list-beautifier-plus/colors.json',
-        //url: 'http://127.0.0.1:5500/UserScripts/Script%20details/github-file-list-beautifier-plus/colors.json',
+        url: 'https://cdn.jsdelivr.net/gh/yutian81/greasyfork-js@main/colors.json',
+        // url: 'https://raw.githubusercontent.com/ChinaGodMan/UserScripts/main/github-file-list-beautifier-plus/colors.json',
         onload: function (response) {
             try {
                 customColors = JSON.parse(response.responseText)
