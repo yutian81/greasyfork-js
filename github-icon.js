@@ -16,7 +16,7 @@
 // @name:zh-HK        GitHub 文件列表美化器
 // @description:zh-HK GitHub 文件清單美化器是一個使用者腳本，用於增強 GitHub 倉庫中的文件顯示效果。它可以為文件和資料夾添加顏色，並將文件類型圖示替換為小圖像，使得程式碼庫更加易於瀏覽和管理。按類型為文件添加顏色和圖標，在儲存庫來源樹中顯示小圖像以取代文件類型圖標
 // @license           MIT
-// @version           4.1.0.5
+// @version           4.1.0.6
 // @match             https://github.com/*
 // @grant             none
 // @run-at            document-start
